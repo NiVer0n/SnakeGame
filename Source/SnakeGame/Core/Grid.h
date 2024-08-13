@@ -24,6 +24,6 @@ namespace Snake
 		
 		void initWalls();
 		void printDebug();
-		FORCEINLINE int32 positionToIndex(int32 x, int32 y) const;
+		FORCEINLINE uint32 positionToIndex(uint32 x, uint32 y) const;
 	};
 } // namespace Snake

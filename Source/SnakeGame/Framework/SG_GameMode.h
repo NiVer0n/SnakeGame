@@ -8,6 +8,7 @@
 #include "SG_GameMode.generated.h"
 
 class ASG_Grid;
+class AExponentialHeightFog;
 
 UCLASS()
 class SNAKEGAME_API ASG_GameMode : public AGameModeBase
@@ -19,17 +20,32 @@ public:
 
 protected:
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "10", ClampMax = "100"))
-	FIntPoint GridDims{ 10, 10 };
+	FUintPoint GridDims{ 10, 10 };
 
 	UPROPERTY(EditDefaultsOnly, meta = (ClampMin = "10", ClampMax = "100"))
-	int32 CellSize{ 10 };
+	uint32 CellSize{ 10 };
 
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ASG_Grid> GridVisualClass;
 
+	UPROPERTY(EditDefaultsOnly, Category = "Design")
+	UDataTable* ColorsTable;
+
 private:
-	TUniquePtr<Snake::Game> Game;
+	void UpdateColors();
+	
+	void FindFog();
+
+	UFUNCTION(Exec, Category = "ConsoleCommand")
+	void NextColor();
 
 	UPROPERTY()
 	ASG_Grid* GridVisual;
+
+	UPROPERTY()
+	AExponentialHeightFog* Fog;
+	
+	TUniquePtr<Snake::Game> Game;
+
+	uint32 ColorTableIndex{0};
 };

@@ -12,6 +12,8 @@ namespace Snake
 	class Grid;
 }
 
+struct FSnakeColors;
+
 UCLASS()
 class SNAKEGAME_API ASG_Grid : public AActor
 {
@@ -27,16 +29,27 @@ public:
 	 * @param Grid  model object
 	 * @param CellSize  world size of the cell
 	 */
-	void SetModel(const TSharedPtr<Snake::Grid>& Grid, int32 InCellSize);
+	void SetModel(const TSharedPtr<Snake::Grid>& Grid, uint32 InCellSize);
+
+	void UpdateColors(const FSnakeColors& Colors);
 
 protected:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(VisibleAnywhere)
+	USceneComponent* Origin;
+
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* GridMesh;
+
+	UPROPERTY()
+	UMaterialInstanceDynamic* GridMaterial;
 
 private:
 	void DrawGrid();
 
 	Snake::Dim GridDim;
-	int32 CellSize;
-	int32 WorldWidth;
-	int32 WorldHeight;
+	uint32 CellSize;
+	uint32 WorldWidth;
+	uint32 WorldHeight;
 };

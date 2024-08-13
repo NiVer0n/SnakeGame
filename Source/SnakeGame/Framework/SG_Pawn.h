@@ -40,4 +40,6 @@ private:
 	int32 CellSize;
 
 	FTransform GridOrigin;
+
+	FDelegateHandle ResizeHandle;
 };
