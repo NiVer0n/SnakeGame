@@ -7,6 +7,7 @@
 	#include "SnakeGame/Tests/Utils/TestUtils.h"
 	#include "SnakeGame/Framework/SG_GameMode.h"
 	#include "SnakeGame/Framework/SG_Pawn.h"
+	#include "Misc/PathViews.h"
 
 BEGIN_DEFINE_SPEC(FSnakeFramework, "Snake",
 	EAutomationTestFlags::ApplicationContextMask | EAutomationTestFlags::ProductFilter | EAutomationTestFlags::HighPriority)
@@ -17,16 +18,35 @@ void FSnakeFramework::Define()
 {
 	using namespace NiVer0nGames::Test;
 
+	Describe("Framework", [this]()
+	{
+		It("GameMapMightExist",
+			[this]()
+			{
+				const TArray<FString> SnakeGameMaps = { "GameLevel" };
+
+				TArray<FString> AllProjectsMap;
+				IFileManager::Get().FindFilesRecursive(AllProjectsMap, *FPaths::ProjectContentDir(), TEXT("*.umap"), true, false);
+
+				for (const auto& SnakeGameMap : SnakeGameMaps)
+				{
+					const bool SnakeMapExists = AllProjectsMap.ContainsByPredicate([&](const FString& ProjectMap)
+					{
+						FStringView OutPath, OutName, OutExt;
+						FPathViews::Split(FStringView(ProjectMap), OutPath, OutName, OutExt);
+						return SnakeGameMap.Equals(FString(OutName));
+					});
+					TestTrueExpr(SnakeMapExists);
+				}
+			});
+	});
+
+
 	Describe("Framework", [this]() {
 		BeforeEach([this]() {
 			AutomationOpenMap("GameLevel");
 			World = GetTestGameWorld();
 		});
-		It("GameMapMightExist",
-			[this]() 
-			{
-				TestNotNull("World Exists", World);
-			});
 		It("ClassesMightBeSetupCorrectly",
 			[this]() {
 				TestNotNull("Snake GameMode set up", Cast<ASG_GameMode>(World->GetAuthGameMode()));
