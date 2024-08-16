@@ -18,12 +18,25 @@ namespace SnakeGame
 		 */
 		Dim dim() const { return c_dim; };
 
-	private:
-		const Dim c_dim;
-		TArray<CellType> m_cells;
-		
-		void initWalls();
+		void update(const TPositionPtr* links, CellType cellType);
+
+		bool hitTest(const Position& position, CellType cellType) const;
+
 		void printDebug();
+
+	private:
+		void initWalls();
+		void freeCellsByType(CellType cellType);
+
 		FORCEINLINE uint32 positionToIndex(uint32 x, uint32 y) const;
+		FORCEINLINE uint32 positionToIndex(const Position& position) const;
+
+		TArray<CellType> m_cells;
+		TMap<CellType, TArray<uint32>> m_indexByType = 
+		{
+			{ CellType::Snake, {} },
+			{ CellType::Wall, {} },
+		};
+		const Dim c_dim;
 	};
 } // namespace SnakeGame

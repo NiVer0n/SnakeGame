@@ -22,9 +22,40 @@ void Grid::initWalls()
 		{
 			if (x == 0 || x == c_dim.width - 1 || y == 0 || y == c_dim.height - 1)
 			{
-				m_cells[positionToIndex(x, y)] = CellType::Wall;
+				const auto index = positionToIndex(x, y);
+				m_cells[index] = CellType::Wall;
+				m_indexByType[CellType::Wall].Add(index);
 			}
 		}
+	}
+}
+
+void Grid::freeCellsByType(CellType cellType)
+{
+	for (int32 i = 0; i < m_indexByType[cellType].Num(); ++i)
+	{
+		const uint32 index = m_indexByType[cellType][i];
+		m_cells[index] = CellType::Empty;
+	}
+	m_indexByType[cellType].Empty();
+}
+
+bool Grid::hitTest(const Position& position, CellType cellType) const
+{
+	return m_cells[positionToIndex(position)] == cellType;
+}
+
+void Grid::update(const TPositionPtr* links, CellType cellType)
+{
+	freeCellsByType(cellType);
+
+	auto* link = links;
+	while (link)
+	{
+		const auto index = positionToIndex(link->GetValue());
+		m_cells[index] = cellType;
+		m_indexByType[cellType].Add(index);
+		link = link->GetNextNode();
 	}
 }
 
@@ -49,6 +80,11 @@ void Grid::printDebug()
 					symbol = '*';
 					break;
 				}
+				case CellType::Snake:
+				{
+					symbol = '_';
+					break;
+				}
 			}
 			line.AppendChar(symbol).AppendChar(' ');
 		}
@@ -60,4 +96,9 @@ void Grid::printDebug()
 uint32 Grid::positionToIndex(uint32 x, uint32 y) const
 {
 	return x + y * c_dim.width;
+}
+
+uint32 Grid::positionToIndex(const Position& position) const
+{
+	return positionToIndex(position.x, position.y);
 }
