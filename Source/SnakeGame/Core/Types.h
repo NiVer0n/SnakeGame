@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Containers/List.h"
+#include "SnakeGame/Containers/List.h"
 
 namespace SnakeGame
 {
@@ -16,7 +16,10 @@ namespace SnakeGame
 	struct Position
 	{
 		Position(uint32 inX, uint32 inY)
-			: x(inX), y(inY){}
+			: x(inX), y(inY) {}
+
+		Position(const Position& position = Position::Zero)
+			: x(position.x), y(position.y) {}
 
 		uint32 x;
 		uint32 y;
@@ -27,6 +30,13 @@ namespace SnakeGame
 			y += rhs.y;
 			return *this;
 		}
+
+		FORCEINLINE bool operator==(const Position& rhs) const
+		{
+			return x == rhs.x && y == rhs.y;
+		}
+
+		static const Position Zero;
 	};
 
 	struct Input
@@ -38,6 +48,8 @@ namespace SnakeGame
 		{
 			return (x == -rhs.x && x != 0) || (y == -rhs.y && y != 0);
 		}
+
+		static const Input Default;
 	};
 
 	enum class CellType
@@ -45,6 +57,7 @@ namespace SnakeGame
 		Empty = 0,
 		Wall,
 		Snake,
+		Food
 	};
 
 	struct Settings
@@ -53,22 +66,13 @@ namespace SnakeGame
 		struct Snake
 		{
 			uint32 defaultSize{ 4 };
-			Position startPosition{ 0, 0 };
+			Position startPosition{ Position::Zero };
 		} snake;
 
 		float gameSpeed{ 1.0f };
 	};
 
-	using TPositionPtr = TDoubleLinkedList<Position>::TDoubleLinkedListNode;
-	
-	class TSnakeList : public TDoubleLinkedList<Position>
-	{
-	public:
-		void MoveTail(TPositionPtr* Tail, TPositionPtr* Head, const Position& Pos)
-		{
-			RemoveNode(Tail);
-			InsertNode(Pos, Head->GetNextNode());
-		}
-	};
+	using TSnakeList = TDoubleLinkedList<Position>;
+	using TPositionPtr = TSnakeList::TDoubleLinkedListNode;
 
 } // namespace SnakeGame

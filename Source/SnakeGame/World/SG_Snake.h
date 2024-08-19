@@ -23,8 +23,6 @@ public:
 	void UpdateColors(const FSnakeColors& Colors);
 
 protected:
-	virtual void BeginPlay() override;
-
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<ASG_SnakeLink> SnakeHeadClass;
 
@@ -41,4 +39,6 @@ private:
 
 	UPROPERTY()
 	TArray<ASG_SnakeLink*> SnakeLinks;
+
+	FLinearColor SnakeLinkColor;
 };

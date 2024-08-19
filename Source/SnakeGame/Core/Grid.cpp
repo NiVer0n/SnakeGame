@@ -40,9 +40,37 @@ void Grid::freeCellsByType(CellType cellType)
 	m_indexByType[cellType].Empty();
 }
 
+
+
 bool Grid::hitTest(const Position& position, CellType cellType) const
 {
 	return m_cells[positionToIndex(position)] == cellType;
+}
+
+bool Grid::randomEmptyPosition(Position& position) const
+{
+	const auto gridSize = c_dim.width * c_dim.height;
+	const uint32 index = FMath::RandRange(0, gridSize - 1);
+
+	for (uint32 i = index; i < gridSize; ++i)
+	{
+		if (m_cells[i] == CellType::Empty)
+		{
+			position = indexToPosition(i);
+			return true;
+		}
+	}
+
+	for (uint32 i = 0; i < index; ++i)
+	{
+		if (m_cells[i] == CellType::Empty)
+		{
+			position = indexToPosition(i);
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Grid::update(const TPositionPtr* links, CellType cellType)
@@ -52,11 +80,22 @@ void Grid::update(const TPositionPtr* links, CellType cellType)
 	auto* link = links;
 	while (link)
 	{
-		const auto index = positionToIndex(link->GetValue());
-		m_cells[index] = cellType;
-		m_indexByType[cellType].Add(index);
+		updateInternal(link->GetValue(), cellType);
 		link = link->GetNextNode();
 	}
+}
+
+void SnakeGame::Grid::update(const Position& position, CellType cellType)
+{
+	freeCellsByType(cellType);
+	updateInternal(position, cellType);
+}
+
+void SnakeGame::Grid::updateInternal(const Position& position, CellType cellType)
+{
+	const auto index = positionToIndex(position);
+	m_cells[index] = cellType;
+	m_indexByType[cellType].Add(index);
 }
 
 void Grid::printDebug()
@@ -85,6 +124,11 @@ void Grid::printDebug()
 					symbol = '_';
 					break;
 				}
+				case CellType::Food:
+				{
+					symbol = 'F';
+					break;
+				}
 			}
 			line.AppendChar(symbol).AppendChar(' ');
 		}
@@ -101,4 +145,9 @@ uint32 Grid::positionToIndex(uint32 x, uint32 y) const
 uint32 Grid::positionToIndex(const Position& position) const
 {
 	return positionToIndex(position.x, position.y);
+}
+
+Position Grid::indexToPosition(uint32 index) const
+{
+	return Position(index % c_dim.width, index / c_dim.width);
 }
