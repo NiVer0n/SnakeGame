@@ -22,6 +22,8 @@ public:
 
 	void UpdateColors(const FSnakeColors& Colors);
 
+	void Explode();
+
 protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<ASG_SnakeLink> SnakeHeadClass;
