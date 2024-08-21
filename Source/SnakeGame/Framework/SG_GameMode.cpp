@@ -13,6 +13,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "World/SG_Food.h"
+#include "UI/SG_HUD.h"
+#include "World/SG_WorldUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogSnakeGameMode, All, All);
 
@@ -26,7 +28,7 @@ void ASG_GameMode::StartPlay()
 	Super::StartPlay();
 
 	// init core game
-	Game = MakeUnique<SnakeGame::Game>(MakeSettings());
+	Game = MakeShared<SnakeGame::Game>(MakeSettings());
 	check(Game.IsValid());
 	SubscribeOnGameEvents();
 
@@ -66,6 +68,12 @@ void ASG_GameMode::StartPlay()
 	UpdateColors();
 
 	SetupInput();
+	HUD = Cast<ASG_HUD>(PC->GetHUD());
+	check(HUD);
+	HUD->SetModel(Game);
+	const FString ResetGameKeyName = SnakeGame::WorldUtils::FindActionKeyName(InputMappingContext, ResetGameInputAction);
+	HUD->SetInputKeyNames(ResetGameKeyName);
+
 }
 
 void ASG_GameMode::UpdateColors()
@@ -150,12 +158,13 @@ void ASG_GameMode::OnGameReset(const FInputActionValue& Value)
 		return;
 	}
 
-	Game.Reset(new SnakeGame::Game(MakeSettings()));
+	Game = MakeShared<SnakeGame::Game>(MakeSettings());
 	check(Game.IsValid());
 	SubscribeOnGameEvents();
 	GridVisual->SetModel(Game->grid(), CellSize);
 	SnakeVisual->SetModel(Game->snake(), CellSize, Game->grid()->dim());
 	FoodVisual->SetModel(Game->food(), CellSize, Game->grid()->dim());
+	HUD->SetModel(Game);
 	SnakeInput = SnakeGame::Input::Default;
 	NextColor();
 }
@@ -202,6 +211,7 @@ void ASG_GameMode::SubscribeOnGameEvents()
 				UE_LOG(LogSnakeGameMode, Display, TEXT("------------------ GAME OVER ------------------"));
 				UE_LOG(LogSnakeGameMode, Display, TEXT("------------------ SCORE: %i ------------------"), Game->score());
 				SnakeVisual->Explode();
+				FoodVisual->Hide();
 				break;
 			}
 			case GameplayEvent::GameCompleted:

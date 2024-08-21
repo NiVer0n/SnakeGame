@@ -26,6 +26,7 @@ void ASG_Food::SetModel(const TSharedPtr<SnakeGame::Food>& InFood, uint32 InCell
 	Dims = InDims;
 
 	SnakeGame::WorldUtils::ScaleMesh(FoodMesh, FVector(CellSize));
+	SetActorHiddenInGame(false);
 }
 
 void ASG_Food::UpdateColor(const FLinearColor& Color)
@@ -49,7 +50,7 @@ void ASG_Food::Explode()
 {
 	if (auto* NS = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionEffect, GetFoodWorldLocation(), FRotator::ZeroRotator, FVector(3.0)))
 	{
-		NS->SetNiagaraVariableLinearColor("SnakeColor", FoodColor);
+		NS->SetVariableLinearColor("SnakeColor", FoodColor);
 	}
 }
 
@@ -60,4 +61,9 @@ FVector ASG_Food::GetFoodWorldLocation() const
 		return SnakeGame::WorldUtils::LinkPositionToVector(Food.Pin()->position(), CellSize, Dims);
 	}
 	return FVector::ZeroVector;
+}
+
+void ASG_Food::Hide()
+{
+	SetActorHiddenInGame(true);
 }

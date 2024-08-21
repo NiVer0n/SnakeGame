@@ -57,6 +57,7 @@ void Game::updateGrid()
 
 bool Game::updateTime(float deltaSeconds)
 {
+	m_gameTime += deltaSeconds;
 	m_moveSeconds += deltaSeconds;
 	if (m_moveSeconds < c_settings.gameSpeed)
 	{
@@ -93,13 +94,16 @@ bool Game::foodTaken()
 
 void Game::subscribeOnGameplayEvent(GameplayEventCallback callback)
 {
-	m_gameplayEventCallback = callback;
+	m_gameplayEventCallbacks.Add(callback);
 }
 
 void Game::dispatchEvent(GameplayEvent Event)
 {
-	if (m_gameplayEventCallback)
+	for (const auto& callback : m_gameplayEventCallbacks)
 	{
-		m_gameplayEventCallback(Event);
+		if (callback)
+		{
+			callback(Event);
+		}
 	}
 }

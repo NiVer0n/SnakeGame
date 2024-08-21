@@ -33,6 +33,8 @@ public:
 
 	void UpdateColors(const FSnakeColors& Colors);
 
+	void Hide();
+
 protected:
 	virtual void BeginPlay() override;
 
