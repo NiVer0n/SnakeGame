@@ -5,6 +5,11 @@
 #include "UI/SG_GameOverWidget.h"
 #include "Core/Game.h"
 
+ASG_HUD::ASG_HUD()
+{
+	PrimaryActorTick.TickInterval = 1.0f;
+}
+
 void ASG_HUD::BeginPlay()
 {
 	Super::BeginPlay();
@@ -38,8 +43,6 @@ void ASG_HUD::SetModel(const TSharedPtr<SnakeGame::Game>& InGame)
 
 	Game = InGame;
 	SetUIGameState(EUIGameState::GameInProgress);
-	GameplayWidget->SetScore(InGame->score());
-	GameOverWidget->SetScore(InGame->score());
 
 	InGame->subscribeOnGameplayEvent([&](GameplayEvent Event) {
 		switch (Event)
@@ -77,10 +80,16 @@ void ASG_HUD::SetUIGameState(EUIGameState InGameState)
 		CurrentWidget->SetVisibility(ESlateVisibility::Collapsed);
 	}
 
-	if (GameWidgets.Contains(GameState))
+	if (GameWidgets.Contains(InGameState))
 	{
-		CurrentWidget = GameWidgets[GameState];
+		CurrentWidget = GameWidgets[InGameState];
 		CurrentWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+
+	if (InGameState == EUIGameState::GameInProgress && Game.IsValid())
+	{
+		GameplayWidget->SetScore(Game.Pin()->score());
+		GameOverWidget->SetScore(Game.Pin()->score());
 	}
 
 	GameState = InGameState;

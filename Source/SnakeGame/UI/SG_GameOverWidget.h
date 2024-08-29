@@ -7,6 +7,7 @@
 #include "SG_GameOverWidget.generated.h"
 
 class UTextBlock;
+class UButton;
 
 UCLASS()
 class SNAKEGAME_API USG_GameOverWidget : public UUserWidget
@@ -16,12 +17,24 @@ class SNAKEGAME_API USG_GameOverWidget : public UUserWidget
 public:
 	void SetScore(uint32 InScore);
 
-	void SetResetKeyName(const FString& ResetGameKeyName); 
+	void SetResetKeyName(const FString& ResetGameKeyName);
 
 protected:
+	virtual void NativeOnInitialized() override;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> BackToMenuButton;
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> ScoreText;
-		
+
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> ResetGameText;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSoftObjectPtr<UWorld> MenuLevel;
+
+private:
+	UFUNCTION()
+	void OnBackToMenu();
 };

@@ -28,6 +28,8 @@ class SNAKEGAME_API ASG_HUD : public AHUD
 	GENERATED_BODY()
 
 public:
+	ASG_HUD();
+
 	virtual void Tick(float DeltaSeconds) override;
 	
 	void SetModel(const TSharedPtr<SnakeGame::Game>& InGame);
