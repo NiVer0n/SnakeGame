@@ -4,7 +4,7 @@
 
 	#include "CoreMinimal.h"
 	#include "Misc/AutomationTest.h"
-	#include "SnakeGame/Tests/Utils/TestUtils.h"
+	#include "SnakeGameTests/Tests/Utils/TestUtils.h"
 	#include "SnakeGame/World/SG_Grid.h"
 	#include "SnakeGame/World/SG_Snake.h"
 	#include "SnakeGame/World/SG_Food.h"
@@ -33,7 +33,7 @@ void FSnakeWorld::Define()
 	{
 		BeforeEach([this]() 
 		{
-			AutomationOpenMap("TestEmptyLevel");
+			AutomationOpenMap("/Game/Tests/TestEmptyLevel");
 			World = GetTestGameWorld();
 
 			constexpr const char* GridBPName = "Blueprint'/Game/World/BP_SnakeGrid.BP_SnakeGrid'";
@@ -87,7 +87,7 @@ void FSnakeWorld::Define()
 	Describe("WorldGrid", [this]() {
 		BeforeEach([this]()
 		{
-			AutomationOpenMap("GameLevel");
+			AutomationOpenMap("/Game/Levels/GameLevel");
 			World = GetTestGameWorld();
 		});
 		It("OnlyOneValidModelActorShouldExist",

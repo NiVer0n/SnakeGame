@@ -12,7 +12,7 @@ namespace SnakeGame
 	class Snake;
 	class Food;
 	
-	class Game
+	class SNAKEGAME_API Game
 	{
 	public:
 		Game(const Settings& settings, const IPositionRandomizerPtr& randomizer = MakeShared<PositionRandomizer>());
@@ -52,7 +52,7 @@ namespace SnakeGame
 	private:
 		void updateGrid();
 		bool updateTime(float deltaSeconds);
-		bool died() const;
+		bool died(const Position& prevTailPosition) const;
 		void generateFood();
 		bool foodTaken();
 		FORCEINLINE void dispatchEvent(GameplayEvent Event);

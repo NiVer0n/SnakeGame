@@ -6,6 +6,8 @@
 	#include "Misc/AutomationTest.h"
 	#include "SnakeGame/Core/Game.h"
 	#include "SnakeGame/Core/Grid.h"
+	#include "SnakeGameTests/Tests/Utils/TestUtils.h"
+	#include "SnakeGameTests/Tests/Utils/SnakeTestUtils.h"
 
 using namespace SnakeGame;
 
@@ -16,29 +18,9 @@ Settings GS;
 
 END_DEFINE_SPEC(FSnakeGame)
 
-class MockPositionRandomizer : public IPositionRandomizer
-{
-public:
-	virtual bool generatePosition(const Dim& dim, const TArray<CellType>& cells, Position& position) const override
-	{
-		position = m_positions[m_index++];
-		return true;
-	}
-
-	void setPositions(const TArray<Position>& positions)
-	{
-		m_positions = positions;
-		m_index = 0;
-	}
-
-private:
-	TArray<Position> m_positions;
-	mutable int32 m_index{ 0 };
-};
-
 void FSnakeGame::Define()
 {
-	Describe("Core.Game", [this]() { //
+	Describe("Core.Game", [this]() {
 		BeforeEach(
 			[this]() {
 				GS.gridDims = Dim{ 10, 10 };
@@ -74,11 +56,11 @@ void FSnakeGame::Define()
 			});
 	});
 
-	Describe("Core.Game", [this]() { //
+	Describe("Core.Game", [this]() {
 		It("FoodCanBeTaken",
 			[this]()
 			{
-				auto Randomizer = MakeShared<MockPositionRandomizer>();
+				auto Randomizer = MakeShared<Test::MockPositionRandomizer>();
 				Randomizer->setPositions({ Position{ 7, 6 }, Position{ 9, 6 }, Position::Zero });
 
 				GS.gridDims = Dim{ 10, 10 };

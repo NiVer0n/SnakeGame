@@ -28,10 +28,12 @@ void Game::update(float deltaSeconds, const Input& input)
 	{
 		return;
 	}
-	
+
+	const auto prevtailPosition = m_snake->tail();
+
 	m_snake->move(input);
 
-	if (died())
+	if (died(prevtailPosition))
 	{
 		m_gameOver = true;
 		dispatchEvent(GameplayEvent::GameOver);
@@ -45,7 +47,7 @@ void Game::update(float deltaSeconds, const Input& input)
 		dispatchEvent(GameplayEvent::FoodTaken);
 		generateFood();
 	}
-	
+
 	updateGrid();
 }
 
@@ -67,9 +69,17 @@ bool Game::updateTime(float deltaSeconds)
 	return true;
 }
 
-bool Game::died() const
+bool Game::died(const Position& prevTailPosition) const
 {
-	return m_grid->hitTest(m_snake->head(), CellType::Wall) || m_grid->hitTest(m_snake->head(), CellType::Snake);
+	if (m_grid->hitTest(m_snake->head(), CellType::Wall))
+	{
+		return true;
+	}
+	if (m_snake->head() == prevTailPosition)
+	{
+		return false;
+	}
+	return m_grid->hitTest(m_snake->head(), CellType::Snake);
 }
 
 void Game::generateFood()

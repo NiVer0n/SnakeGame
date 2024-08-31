@@ -7,22 +7,21 @@
 
 namespace SnakeGame
 {
-	struct Dim
+	struct SNAKEGAME_API Dim
 	{
 		uint32 width;
 		uint32 height;
 	};
 
-	struct Position
+	struct SNAKEGAME_API Position
 	{
 		Position(uint32 inX, uint32 inY)
 			: x(inX), y(inY) {}
 
-		Position(const Position& position = Position::Zero)
-			: x(position.x), y(position.y) {}
+		Position() = default;
 
-		uint32 x;
-		uint32 y;
+		uint32 x{ 0 };
+		uint32 y{ 0 };
 
 		FORCEINLINE Position& operator+=(const Position& rhs)
 		{
@@ -39,7 +38,7 @@ namespace SnakeGame
 		static const Position Zero;
 	};
 
-	struct Input
+	struct SNAKEGAME_API Input
 	{
 		int8 x;
 		int8 y;
@@ -60,7 +59,7 @@ namespace SnakeGame
 		Food
 	};
 
-	struct Settings
+	struct SNAKEGAME_API Settings
 	{
 		Dim gridDims{ 40, 10 };
 		struct Snake

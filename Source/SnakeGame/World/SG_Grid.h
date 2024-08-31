@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Core/Types.h"
+#include "SnakeGame/Core/Types.h"
 #include "SG_Grid.generated.h"
 
 namespace SnakeGame
@@ -39,13 +39,13 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
-	USceneComponent* Origin;
+	TObjectPtr<USceneComponent> Origin;
 
 	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* GridMesh;
+	TObjectPtr<UStaticMeshComponent> GridMesh;
 
 	UPROPERTY()
-	UMaterialInstanceDynamic* GridMaterial;
+	TObjectPtr<UMaterialInstanceDynamic> GridMaterial;
 
 private:
 	void DrawGrid();

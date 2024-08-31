@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Core/Types.h"
+#include "SnakeGame/Core/Types.h"
 
 namespace SnakeGame
 {
-	class Food
+	class SNAKEGAME_API Food
 	{
 	public:
 		Food() = default;

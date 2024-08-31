@@ -8,6 +8,7 @@
 #include "SG_Snake.generated.h"
 
 class ASG_SnakeLink;
+class USG_SnakeObjectPool;
 struct FSnakeColors;
 
 UCLASS()
@@ -24,10 +25,8 @@ public:
 
 	void Explode();
 
-protected:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
-	TSubclassOf<ASG_SnakeLink> SnakeHeadClass;
 
+protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
 	TSubclassOf<ASG_SnakeLink> SnakeLinkClass;
 
@@ -35,12 +34,17 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
+	void InitObjectPool();
+
 	TWeakPtr<SnakeGame::Snake> Snake;
 	uint32 CellSize;
 	SnakeGame::Dim Dims;
 
 	UPROPERTY()
-	TArray<ASG_SnakeLink*> SnakeLinks;
+	TArray<TObjectPtr<ASG_SnakeLink>> SnakeLinks;
 
+	UPROPERTY()
+	TObjectPtr<USG_SnakeObjectPool> ObjectPool { nullptr };
+	
 	FLinearColor SnakeLinkColor;
 };
